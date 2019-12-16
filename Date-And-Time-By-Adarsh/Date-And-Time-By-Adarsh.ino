@@ -1,4 +1,5 @@
-//---------------------Date - And - Time - By - Adarsh Verma - KIKfuc-17----------------------//
+//--------------------- REAL TIME CLOCK IN A LCD MONITOR - By - Adarsh Verma - KIKfuc-17----------------------//
+//Task: write a program code for any type of microcontroller or field programmable gate array (FPGA) which implements the following functions:
 #include <Wire.h>
 #include <TimeLib.h>
 #include <DS1307RTC.h>
@@ -6,7 +7,6 @@
 #include <LiquidCrystal_I2C.h>
 
 #define I2C_ADDR    0x27  // Define I2C Address for the PCF8574T 
-
 
 #define Rs_pin  0
 #define Rw_pin  1
@@ -33,7 +33,7 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
     int menu = 0;
     int input = 0;
 
-
+//---------------------setup--------------------------------//
     void setup() {
 
         lcd.begin(16, 2);
@@ -49,6 +49,7 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
 
         int menu = 0;
     }
+//--------------------------options-------------------------------//
     void Option0() {
         tmElements_t tm;
         lcd.backlight();
@@ -121,7 +122,7 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
     }
 
 
-
+//------------------------Start-----------------------------//
     void loop() {
 
         if (digitalRead(P1)) {
@@ -149,7 +150,7 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
         }
         lcd.print(number);
     }
-
+//---------------------------------Select-----------------------------//
     void Display1() {
         lcd.clear();
 
@@ -181,7 +182,7 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
             if (hourupg == 2) {
 
                 Option2();
-                delay(1000);
+                delay(200);
                 input = 2;
                 hourupg--;
 
@@ -189,14 +190,14 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
             } else if (hourupg == 1) {
 
                 Option1();
-                delay(1000);
+                delay(200);
                 input = 1;
                 hourupg--;
 
             } else {
 
                 Option0();
-                delay(1000);
+                delay(200);
                 input = 0;
                 hourupg = 2;
             }
