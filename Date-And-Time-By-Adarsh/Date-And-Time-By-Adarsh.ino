@@ -6,24 +6,24 @@
 #include <LCD.h>
 #include <LiquidCrystal_I2C.h>
 #include <millisDelay.h>
-millisDelay t3;
+    millisDelay starttime;
 
-#define I2C_ADDR    0x27  // Define I2C Address for the PCF8574T 
-
-#define Rs_pin  0
-#define Rw_pin  1
-#define En_pin  2
-#define BACKLIGHT_PIN  3
-#define D4_pin  4
-#define D5_pin  5
-#define D6_pin  6
-#define D7_pin  7
-
-#define  LED_OFF  1
-#define  LED_ON  0
-
-/*-----( Declare objects )-----*/  
-LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin);
+    #define I2C_ADDR    0x27  // Define I2C Address for the PCF8574T 
+    
+    #define Rs_pin  0
+    #define Rw_pin  1
+    #define En_pin  2
+    #define BACKLIGHT_PIN  3
+    #define D4_pin  4
+    #define D5_pin  5
+    #define D6_pin  6
+    #define D7_pin  7
+    
+    #define  LED_OFF  1
+    #define  LED_ON  0
+    
+    /*-----( Declare objects )-----*/  
+    LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin);
 
 
     //************Button*****************//
@@ -32,12 +32,11 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
     int P3 = 8; // Button -
     //************Variables**************//
     int hourupg = 0;
-    int c =0;
-    
+    int check = 0;
     int menu = 0;
     int input = 0;
 
-//---------------------setup--------------------------------//
+    //---------------------setup--------------------------------//
     void setup() {
 
         lcd.begin(16, 2);
@@ -53,7 +52,8 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
 
         int menu = 0;
     }
-//--------------------------options-------------------------------//
+
+    //--------------------------options-------------------------------//
     void Option0() {
         tmElements_t tm;
         lcd.backlight();
@@ -75,8 +75,8 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
         lcd.print(':');
         print2digits(tm.Second);
         lcd.print(": DMY");
-
     }
+
     void Option1() {
         tmElements_t tm;
         lcd.backlight();
@@ -98,7 +98,6 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
         lcd.print(':');
         print2digits(tm.Second);
         lcd.print(": YMD");
-
     }
 
     void Option2() {
@@ -122,24 +121,21 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
         lcd.print(':');
         print2digits(tm.Second);
         lcd.print(": MDY");
-
     }
 
 
-//------------------------Start-----------------------------//
+    //------------------------Start-----------------------------//
     void loop() {
 
         if (digitalRead(P1)) {
-          c=0;t3.start(4400);
-          if(menu==3)
-        {
-          menu=0;
-        }
-        else
-        {
-          menu = menu + 1;
-        }
-            
+            check = 0;
+            starttime.start(4400);
+            if (menu == 3) {
+                menu = 0;
+            } else {
+                menu = menu + 1;
+            }
+
         }
         // in which subroutine should we go?
         if (menu == 0) {
@@ -151,7 +147,7 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
         if (menu == 2) {
             StoreOption();
         }
-        
+
         delay(100);
     }
 
@@ -161,78 +157,86 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
         }
         lcd.print(number);
     }
-//---------------------------------Select-----------------------------//
-    void Display1() {
- 
-      if(digitalRead(P2)==HIGH)
-      {c=0;t3.start(4400);
-        if(hourupg==2)
-        {
-          hourupg=0;
-        }
-        else
-        {
-          hourupg=hourupg+1;
-        }
-      }
 
-      if (digitalRead(P3) == HIGH)
-      {c=0;t3.start(4400);
-        if(hourupg==0)
-      {
-        hourupg=2;
-      }
-      else
-      {
-        hourupg=hourupg-1;
+    //---------------------------------Select-----------------------------//
+    void Display1() {
+
+        if (digitalRead(P2) == HIGH) {
+            check = 0;
+            starttime.start(4400);
+            if (hourupg == 2) {
+                hourupg = 0;
+            } else {
+                hourupg = hourupg + 1;
+            }
         }
-      } 
-      if(!digitalRead(P2)==HIGH){
-            
+
+        if (digitalRead(P3) == HIGH) {
+            check = 0;
+            starttime.start(4400);
+            if (hourupg == 0) {
+                hourupg = 2;
+            } else {
+                hourupg = hourupg - 1;
+            }
+        }
+        if (!digitalRead(P2) == HIGH) {
+
             if (hourupg == 0) {
 
-                Option0();input = 0;
-                
-                if (t3.justFinished()){c++;} if(c<1){
-                delay(100);
-                lcd.setCursor(13,1);
-                lcd.print("   ");
-                lcd.setCursor(6,0);
-                lcd.print("          ");
-                
+                Option0();
+                input = 0;
+
+                if (starttime.justFinished()) {
+                    check++;
                 }
-                
-                
-            } 
-            if (hourupg == 1) {
-
-                Option1();input = 1;
-                if (t3.justFinished()){c++;} if(c<1){
-                delay(100);
-                lcd.setCursor(13,1);
-                lcd.print("   ");
-                lcd.setCursor(6,0);
-                lcd.print("          ");
-                
-                
-            } }
-            if (hourupg == 2){
-
-                Option2();input = 2;
-                if (t3.justFinished()){c++;} if(c<1){
-                delay(100);
-                lcd.setCursor(13,1);
-                lcd.print("   ");
-                lcd.setCursor(6,0);
-                lcd.print("          ");
+                if (check < 1) {
+                    delay(100);
+                    lcd.setCursor(13, 1);
+                    lcd.print("   ");
+                    lcd.setCursor(6, 0);
+                    lcd.print("          ");
                 }
             }
-           }
+            
+            if (hourupg == 1) {
+
+                Option1();
+                input = 1;
+                if (starttime.justFinished()) {
+                    check++;
+                }
+                if (check < 1) {
+                    delay(100);
+                    lcd.setCursor(13, 1);
+                    lcd.print("   ");
+                    lcd.setCursor(6, 0);
+                    lcd.print("          ");
+                }
+            }
+            
+            if (hourupg == 2) {
+
+                Option2();
+                input = 2;
+                if (starttime.justFinished()) {
+                    check++;
+                }
+                if (check < 1) {
+                    delay(100);
+                    lcd.setCursor(13, 1);
+                    lcd.print("   ");
+                    lcd.setCursor(6, 0);
+                    lcd.print("          ");
+                }
+            }
+            
+        }
     }
 
 
     void StoreOption() {
-// Variable saving
+    // Variable saving
 
         if (input == 0) {
             Option0();
