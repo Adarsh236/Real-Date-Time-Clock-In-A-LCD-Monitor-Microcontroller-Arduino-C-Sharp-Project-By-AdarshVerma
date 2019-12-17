@@ -5,6 +5,8 @@
 #include <DS1307RTC.h>
 #include <LCD.h>
 #include <LiquidCrystal_I2C.h>
+#include <millisDelay.h>
+millisDelay t3;
 
 #define I2C_ADDR    0x27  // Define I2C Address for the PCF8574T 
 
@@ -30,6 +32,8 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
     int P3 = 8; // Button -
     //************Variables**************//
     int hourupg = 0;
+    int c =0;
+    
     int menu = 0;
     int input = 0;
 
@@ -126,7 +130,16 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
     void loop() {
 
         if (digitalRead(P1)) {
-            menu = menu + 1;
+          c=0;t3.start(4400);
+          if(menu==3)
+        {
+          menu=0;
+        }
+        else
+        {
+          menu = menu + 1;
+        }
+            
         }
         // in which subroutine should we go?
         if (menu == 0) {
@@ -138,9 +151,7 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
         if (menu == 2) {
             StoreOption();
         }
-        if (menu == 3) {
-            menu = 0;
-        }
+        
         delay(100);
     }
 
@@ -152,57 +163,71 @@ LiquidCrystal_I2C  lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin
     }
 //---------------------------------Select-----------------------------//
     void Display1() {
-        lcd.clear();
+ 
+      if(digitalRead(P2)==HIGH)
+      {c=0;t3.start(4400);
+        if(hourupg==2)
+        {
+          hourupg=0;
+        }
+        else
+        {
+          hourupg=hourupg+1;
+        }
+      }
 
-        if (digitalRead(P2) == HIGH) {
+      if (digitalRead(P3) == HIGH)
+      {c=0;t3.start(4400);
+        if(hourupg==0)
+      {
+        hourupg=2;
+      }
+      else
+      {
+        hourupg=hourupg-1;
+        }
+      } 
+      if(!digitalRead(P2)==HIGH){
+            
             if (hourupg == 0) {
 
-                Option0();
-                delay(200);
-                input = 0;
-                hourupg ++;
+                Option0();input = 0;
+                
+                if (t3.justFinished()){c++;} if(c<1){
+                delay(100);
+                lcd.setCursor(13,1);
+                lcd.print("   ");
+                lcd.setCursor(6,0);
+                lcd.print("          ");
+                
+                }
+                
+                
+            } 
+            if (hourupg == 1) {
 
-            } else if (hourupg == 1) {
+                Option1();input = 1;
+                if (t3.justFinished()){c++;} if(c<1){
+                delay(100);
+                lcd.setCursor(13,1);
+                lcd.print("   ");
+                lcd.setCursor(6,0);
+                lcd.print("          ");
+                
+                
+            } }
+            if (hourupg == 2){
 
-                Option1();
-                delay(200);
-                input = 1;
-                hourupg ++;
-
-            } else {
-
-                Option2();
-                delay(200);
-                input = 2;
-                hourupg = 0;
+                Option2();input = 2;
+                if (t3.justFinished()){c++;} if(c<1){
+                delay(100);
+                lcd.setCursor(13,1);
+                lcd.print("   ");
+                lcd.setCursor(6,0);
+                lcd.print("          ");
+                }
             }
-        }
-
-        if (digitalRead(P3) == HIGH) {
-            if (hourupg == 2) {
-
-                Option2();
-                delay(200);
-                input = 2;
-                hourupg--;
-
-
-            } else if (hourupg == 1) {
-
-                Option1();
-                delay(200);
-                input = 1;
-                hourupg--;
-
-            } else {
-
-                Option0();
-                delay(200);
-                input = 0;
-                hourupg = 2;
-            }
-        }
-
+           }
     }
 
 
